@@ -126,27 +126,45 @@
     results
 }
 
-## re-apply the names on, e.g., mapply(FUN, X) to the return value;
-## see test_mrename for many edge cases
-.mrename <-
-    function(results, dots, USE.NAMES=TRUE)
-{
-    ## dots: a list() containing one element for each ... argument
-    ## passed to mapply
-    if (USE.NAMES) {
-        ## extract the first argument; if there are no arguments, then
-        ## dots is (unnamed) list(0)
-        if (length(dots))
-            dots <- dots[[1L]]
-        if (is.character(dots) && is.null(names(dots))) {
-            names(results) <- dots
-        } else {
-            names(results) <- names(dots)
-        }
+.wrapMapply <- function(dots, .FUN, .MoreArgs) {
+  .mapply(.FUN, dots, .MoreArgs)[[1L]]
+}
+
+# see test_utilities.R:test_transposeArgsWithIterations() for all
+# USE.NAMES corner cases
+.transposeArgsWithIterations <- function(nestedList, USE.NAMES) {
+  num_arguments <- length(nestedList)
+  if (num_arguments == 0L) {
+    return(list())
+  }
+
+  # nestedList[[1L]] has the values for the first argument in all iterations
+  num_iterations <- length(nestedList[[1L]])
+
+  # count the iterations, and name them if needed
+  iterations <- seq_len(num_iterations)
+  if (USE.NAMES) {
+    first_arg <- nestedList[[1L]]
+    if (is.character(first_arg) && is.null(names(first_arg))) {
+      names(iterations) <- first_arg
     } else {
-        results <- unname(results)
+      names(iterations) <- names(first_arg)
     }
-    results
+  }
+
+  # argnames:
+  argnames <- names(nestedList)
+  
+  # on iteration `i` we get the i-th element from each list.
+  # note that .getDotsForMapply() has taken care already of ensuring that
+  # nestedList elements are recycled properly
+  lapply(iterations, function(i) {
+    x <- lapply(nestedList, function(argi) {
+      unname(argi[i])
+    })
+    names(x) <- argnames
+    x
+  })
 }
 
 .simplify <-
