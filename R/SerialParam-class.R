@@ -127,6 +127,13 @@ setReplaceMethod(
     x
 })
 
+setMethod(
+  "bpsharememory", "SerialParam",
+  function(x)
+{
+    TRUE
+})
+
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Backend method
 ###

@@ -14,6 +14,7 @@
 \alias{bplog<-,SerialParam,logical-method}
 \alias{bpthreshold<-,SerialParam,character-method}
 \alias{bplogdir<-,SerialParam,character-method}
+\alias{bpsharememory,SerialParam-method}
 \alias{length,SerialBackend-method}
 
 \title{Enable serial evaluation}
@@ -181,7 +182,7 @@ SerialParam(
   The following generics are implemented and perform as documented on
   the corresponding help page (e.g., \code{?bpworkers}):
   \code{\link{bpworkers}}. \code{\link{bpisup}}, \code{\link{bpstart}},
-  \code{\link{bpstop}}, are implemented, but do not have any
+  \code{\link{bpstop}}, \code{\link{bpsharememory}} are implemented, but do not have any
   side-effects.
 
 }

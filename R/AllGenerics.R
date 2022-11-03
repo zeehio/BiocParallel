@@ -67,6 +67,9 @@ setGeneric("bpfallback",
 setGeneric("bpfallback<-",
     function(x, value) standardGeneric("bpfallback<-"))
 
+setGeneric("bpsharememory",
+           function(x) standardGeneric("bpsharememory"))
+
 ## errors
 
 setGeneric("bpstopOnError",

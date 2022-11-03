@@ -338,6 +338,12 @@ setReplaceMethod("bpbackend", c("SnowParam", "cluster"),
     x
 })
 
+setMethod("bpsharememory", "SnowParam",
+    function(x)
+{
+    FALSE
+})
+
 ### - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ### Getters / Setters
 ###
