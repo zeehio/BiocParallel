@@ -4,11 +4,6 @@
 
 ## bpmapply() dispatches to bplapply() where errors and logging are handled.
 
-.wrap <- function(.i, .FUN, .ddd, .MoreArgs) {
-    dots <- lapply(.ddd, `[`, .i)
-    .mapply(.FUN, dots, .MoreArgs)[[1L]]
-}
-
 setMethod("bpmapply", c("ANY", "BiocParallelParam"),
     function(FUN, ..., MoreArgs=NULL, SIMPLIFY=TRUE,
              USE.NAMES=TRUE, BPREDO=list(),
@@ -16,15 +11,28 @@ setMethod("bpmapply", c("ANY", "BiocParallelParam"),
 {
     ## re-package for lapply
     ddd <- .getDotsForMapply(...)
-    if (!length(ddd) || !length(ddd[[1L]]))
-        return(.mrename(list(), ddd, USE.NAMES))
-
     FUN <- match.fun(FUN)
+    if (bpsharememory()) {
+      if (!length(ddd) || !length(ddd[[1L]]))
+        return(.mrename(list(), ddd, USE.NAMES))
+      
+      res <- bplapply(X=seq_along(ddd[[1L]]), .wrapMapplyShared, .FUN=FUN, .ddd=ddd,
+                      .MoreArgs=MoreArgs, BPREDO=BPREDO,
+                      BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
+      .simplify(.mrename(res, ddd, USE.NAMES), SIMPLIFY)
+    } else {
+      if (!length(ddd))
+        return(list())
+      
+      ddd <- .transposeArgsWithIterations(ddd, USE.NAMES)
+      if (!length(ddd))
+        return(ddd)
 
-    res <- bplapply(X=seq_along(ddd[[1L]]), .wrap, .FUN=FUN, .ddd=ddd,
-                    .MoreArgs=MoreArgs, BPREDO=BPREDO,
-                    BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
-    .simplify(.mrename(res, ddd, USE.NAMES), SIMPLIFY)
+      res <- bplapply(X=ddd, .wrapMapplyNotShared, .FUN=FUN,
+                      .MoreArgs=MoreArgs, BPREDO=BPREDO,
+                      BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
+      .simplify(res, SIMPLIFY)
+    }
 })
 
 setMethod("bpmapply", c("ANY", "missing"),
