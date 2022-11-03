@@ -8,6 +8,19 @@ NEW FEATURES
     ITER[[2]], etc.
     https://stat.ethz.ch/pipermail/bioc-devel/2022-July/019075.html
 
+    o (v1.31.16) New bpsharememory() generic. This generic tells 
+    whether the workers share the same memory space. A serial or
+    multicore based backend returns TRUE, while a multiple
+    process backend (like Snow) returns FALSE. This generic is used
+    by bpmapply() to choose the most efficient argument slicing
+    implementation.
+
+    o (v1.31.16) bpmapply() uses bpsharememory() to decide whether
+    to send the whole list of arguments to all workers (if they
+    share memory) or to transpose the list of arguments to a list
+    of iterations and send the corresponding slice to each worker
+    (new behaviour, faster for Snow backends).
+
 USER VISIBLE CHANGES
 
     o (v 1.31.3) Deprecate BatchJobsParam in favor of BatchtoolsParam
