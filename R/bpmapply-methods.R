@@ -12,7 +12,8 @@ setMethod("bpmapply", c("ANY", "BiocParallelParam"),
     ## re-package for lapply
     ddd <- .getDotsForMapply(...)
     FUN <- match.fun(FUN)
-    if (bpsharememory()) {
+
+    if (bpsharememory(BPPARAM)) {
       if (!length(ddd) || !length(ddd[[1L]]))
         return(.mrename(list(), ddd, USE.NAMES))
       
