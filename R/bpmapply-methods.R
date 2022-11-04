@@ -13,36 +13,21 @@ setMethod("bpmapply", c("ANY", "BiocParallelParam"),
     ddd <- .getDotsForMapply(...)
     FUN <- match.fun(FUN)
 
-    if (bpsharememory(BPPARAM)) {
-      if (!length(ddd) || !length(ddd[[1L]]))
-        return(.mrename(list(), ddd, USE.NAMES))
+    if (!length(ddd))
+      return(list())
+     
+    ddd <- .transposeArgsWithIterations(ddd, USE.NAMES)
+    if (!length(ddd))
+      return(ddd)
 
-      .wrapMapplyShared <- local({function(.i, .FUN, .ddd, .MoreArgs) {
-        dots <- lapply(.ddd, `[`, .i)
-       .mapply(.FUN, dots, .MoreArgs)[[1L]]
-      }}, envir = baseenv())
-      
-      res <- bplapply(X=seq_along(ddd[[1L]]), .wrapMapplyShared, .FUN=FUN, .ddd=ddd,
-                      .MoreArgs=MoreArgs, BPREDO=BPREDO,
-                      BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
-      .simplify(.mrename(res, ddd, USE.NAMES), SIMPLIFY)
-    } else {
-      if (!length(ddd))
-        return(list())
-      
-      ddd <- .transposeArgsWithIterations(ddd, USE.NAMES)
-      if (!length(ddd))
-        return(ddd)
+    .wrapMapplyNotShared <- local({function(dots, .FUN, .MoreArgs) {
+      .mapply(.FUN, dots, .MoreArgs)[[1L]]
+    }}, envir = baseenv())
 
-      .wrapMapplyNotShared <- local({function(dots, .FUN, .MoreArgs) {
-        .mapply(.FUN, dots, .MoreArgs)[[1L]]
-      }}, envir = baseenv())
-
-      res <- bplapply(X=ddd, .wrapMapplyNotShared, .FUN=FUN,
-                      .MoreArgs=MoreArgs, BPREDO=BPREDO,
-                      BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
-      .simplify(res, SIMPLIFY)
-    }
+    res <- bplapply(X=ddd, .wrapMapplyNotShared, .FUN=FUN,
+                    .MoreArgs=MoreArgs, BPREDO=BPREDO,
+                    BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
+    .simplify(res, SIMPLIFY)
 })
 
 setMethod("bpmapply", c("ANY", "missing"),
