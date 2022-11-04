@@ -22,7 +22,6 @@
 \alias{bplog<-,SnowParam,logical-method}
 \alias{bpthreshold,SnowParam-method}
 \alias{bpthreshold<-,SnowParam,character-method}
-\alias{bpsharememory,SnowParam-method}
 
 % Other methods
 \alias{coerce,SOCKcluster,SnowParam-method}
@@ -408,11 +407,6 @@ snowWorkers(type = c("SOCK", "MPI", "FORK"))
       Returns a \code{logical()} vector: FALSE for any jobs that resulted in
       an error. \code{x} is the result list output by a \code{BiocParallel}
       function such as \code{bplapply} or \code{bpmapply}.
-    }
-    \item{}{
-      \code{bpsharememory(x)}:
-      Returns `FALSE` since snow param workers belong to different processes
-      that do not share the same memory space.
     }
   }
 

@@ -10,7 +10,6 @@
 \alias{bpschedule,MulticoreParam-method}
 \alias{bpworkers<-,MulticoreParam,numeric-method}
 \alias{show,MulticoreParam-method}
-\alias{bpsharememory,MulticoreParam-method}
 
 %% implementation detail
 \alias{.close,TransientMulticoreParam-method}
@@ -323,11 +322,6 @@ multicoreWorkers()
       each job with the prefix JOB (e.g., JOB1, JOB2, etc.).  When no
       \code{resultdir} is provided the results are returned to the session as
       \code{list}.
-    }
-    \item{}{
-      \code{bpsharememory(x)}:
-      Returns \code{TRUE} since forking lets all workers inherit the same
-      memory space.
     }
   }
 

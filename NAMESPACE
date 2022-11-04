@@ -83,7 +83,7 @@ export(
     bpfallback, "bpfallback<-",
     bplog, "bplog<-", bplogdir, "bplogdir<-",
     bpthreshold, "bpthreshold<-", bpresultdir, "bpresultdir<-",
-    bpsharememory,
+
     ## schedule
     bpschedule
 )
@@ -100,7 +100,7 @@ exportMethods(
     bpprogressbar, "bpprogressbar<-", bpRNGseed, "bpRNGseed<-",
     bptimeout, "bptimeout<-", bplog, "bplog<-", bplogdir, "bplogdir<-",
     bpthreshold, "bpthreshold<-", bpresultdir, "bpresultdir<-",
-    bpsharememory,
+
     ## schedule
     bpschedule
 )

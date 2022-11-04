@@ -102,10 +102,3 @@ setMethod("bpschedule", "MulticoreParam",
     else
         TRUE
 })
-
-
-setMethod("bpsharememory", "MulticoreParam",
-    function(x)
-{
-    TRUE
-})
