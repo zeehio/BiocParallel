@@ -20,13 +20,19 @@ setMethod("bpmapply", c("ANY", "BiocParallelParam"),
     if (!length(ddd))
       return(ddd)
 
-    .wrapMapplyNotShared <- local({function(dots, .FUN, .MoreArgs) {
-      .mapply(.FUN, dots, .MoreArgs)[[1L]]
-    }}, envir = baseenv())
+    .wrapMapplyNotShared <- local(
+        {
+        function(dots, .FUN, .MoreArgs) {
+            .mapply(.FUN, dots, .MoreArgs)[[1L]]
+        }},
+        envir = baseenv()
+    )
 
-    res <- bplapply(X=ddd, .wrapMapplyNotShared, .FUN=FUN,
-                    .MoreArgs=MoreArgs, BPREDO=BPREDO,
-                    BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS)
+    res <- bplapply(
+        X=ddd, .wrapMapplyNotShared, .FUN=FUN,
+        .MoreArgs=MoreArgs, BPREDO=BPREDO,
+        BPPARAM=BPPARAM, BPOPTIONS = BPOPTIONS
+    )
     .simplify(res, SIMPLIFY)
 })
 
