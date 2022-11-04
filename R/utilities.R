@@ -186,16 +186,6 @@
   })
 }
 
-.wrapMapplyShared <- function(.i, .FUN, .ddd, .MoreArgs) {
-  dots <- lapply(.ddd, `[`, .i)
-  .mapply(.FUN, dots, .MoreArgs)[[1L]]
-}
-
-
-.wrapMapplyNotShared <- function(dots, .FUN, .MoreArgs) {
-  .mapply(.FUN, dots, .MoreArgs)[[1L]]
-}
-
 
 .simplify <-
     function(results, SIMPLIFY=FALSE)
