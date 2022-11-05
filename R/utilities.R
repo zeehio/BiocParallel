@@ -126,49 +126,6 @@
     results
 }
 
-# see test_utilities.R:test_transposeArgsWithIterations() for all
-# USE.NAMES corner cases
-.transposeArgsWithIterations <- function(nestedList, USE.NAMES) {
-    num_arguments <- length(nestedList)
-    if (num_arguments == 0L) {
-        return(list())
-    }
-
-    # nestedList[[1L]] has the values for the first argument in all iterations
-    num_iterations <- length(nestedList[[1L]])
-
-    # count the iterations, and name them if needed
-    iterations <- seq_len(num_iterations)
-    if (USE.NAMES) {
-        first_arg <- nestedList[[1L]]
-        if (is.character(first_arg) && is.null(names(first_arg))) {
-            names(iterations) <- first_arg
-        } else {
-            names(iterations) <- names(first_arg)
-        }
-    }
-
-    # argnames:
-    argnames <- names(nestedList)
-
-    # on iteration `i` we get the i-th element from each list.
-    # note that .getDotsForMapply() has taken care already of ensuring that
-    # nestedList elements are recycled properly
-    lapply(
-        iterations,
-        function(i) {
-            x <- lapply(
-                nestedList,
-                function(argi) {
-                    unname(argi[i])
-                })
-            names(x) <- argnames
-            x
-        }
-    )
-}
-
-
 .simplify <-
     function(results, SIMPLIFY=FALSE)
 {
@@ -189,25 +146,6 @@
     dname <- substr(dirname(filepath), 1, wd1)
     sprintf("%s: %s...%s%s",
             tag, dname, .Platform$file.sep, bname)
-}
-
-.getDotsForMapply <-
-    function(...)
-{
-    ddd <- list(...)
-    if (!length(ddd))
-        return(list(list()))
-    len <- vapply(ddd, length, integer(1L))
-    if (!all(len == len[1L])) {
-        max.len <- max(len)
-        if (max.len && any(len == 0L))
-            stop("zero-length and non-zero length inputs cannot be mixed")
-        if (any(max.len %% len))
-            warning("longer argument not a multiple of length of vector")
-        ddd <- lapply(ddd, rep_len, length.out=max.len)
-    }
-
-    ddd
 }
 
 .dir_valid_rw <-

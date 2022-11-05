@@ -9,16 +9,14 @@ setMethod("bpmapply", c("ANY", "BiocParallelParam"),
              USE.NAMES=TRUE, BPREDO=list(),
              BPPARAM=bpparam(), BPOPTIONS = bpoptions())
 {
-    ## re-package for lapply
-    ddd <- .getDotsForMapply(...)
     FUN <- match.fun(FUN)
 
-    if (!length(ddd))
-      return(list())
-     
-    ddd <- .transposeArgsWithIterations(ddd, USE.NAMES)
-    if (!length(ddd))
-      return(ddd)
+    ddd <- mapply(
+        function(...) list(...),
+        ...,
+        USE.NAMES=USE.NAMES,
+        SIMPLIFY=FALSE
+    )
 
     .wrapMapplyNotShared <- local(
         {
